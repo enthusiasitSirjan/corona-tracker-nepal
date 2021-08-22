@@ -1,0 +1,36 @@
+.table {
+    margin-top: 20px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    color: #6a5d5d;
+    background-color: white;
+    height: 400px;
+    cursor: pointer;
+  }
+  
+  .table tr {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid black;
+  }
+  
+  .table td {
+    padding: 0.5rem;
+    border: none;
+  }
+  
+  .table td img{
+      height: 30px;
+      width:30px;
+  }
+  .table tr:nth-of-type(odd) {
+    background-color: #f3f2f8;
+  }
+
+  .table-data{
+      display: flex;
+      justify-content: center;
+    align-items: center;
+    gap:10px;
+    }

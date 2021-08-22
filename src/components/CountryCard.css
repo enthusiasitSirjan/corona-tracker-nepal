@@ -1,0 +1,13 @@
+.country-card{
+    display:flex;
+    align-items: center;
+    gap:15px;
+}
+
+.card-head h1{
+    color:#ffff
+}
+.ant-card-head-title{
+    color:#ffff;
+    font-size:1.5em;
+}
