@@ -1,24 +1,58 @@
 import { Card } from "antd";
 import React, { useEffect, useState } from "react";
+import { MenuItem, FormControl, Select } from "@material-ui/core";
 import numeral from "numeral";
 import "./CountryCard.css";
-import { PlusOutlined } from "@ant-design/icons";
-const CountryCard = ({ country }) => {
+
+const CountryCard = () => {
   const [countryData, setCountryData] = useState([]);
+  const [country, setInputCountry] = useState("worldwide");
+  const [countries, setCountries] = useState([]);
+
   useEffect(() => {
     const getCountriesData = async () => {
-      fetch("https://corona.lmao.ninja/v2/countries/Nepal")
+      fetch("https://disease.sh/v3/covid-19/countries")
         .then((response) => response.json())
         .then((data) => {
-          setCountryData(data);
+          const countries = data.map((country) => ({
+            name: country.country,
+            value: country.countryInfo.iso2,
+          }));
+          setCountries(countries);
         });
     };
 
     getCountriesData();
   }, []);
+  const onCountryChange = async (e) => {
+    const countryCode = e.target.value;
+
+    const url =
+      countryCode === "worldwide"
+        ? "https://disease.sh/v3/covid-19/all"
+        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setInputCountry(countryCode);
+        setCountryData(data);
+      });
+  };
 
   return (
     <>
+      <div>
+        <FormControl className="app__dropdown">
+          <Select variant="outlined" value={country} onChange={onCountryChange}>
+            <MenuItem value="worldwide" style={{ color: "white" }}>
+              Worldwide
+            </MenuItem>
+            {countries.map((country) => (
+              <MenuItem value={country.value}>{country.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
       <div className="country-card">
         <Card
           className="card-head"
@@ -29,12 +63,6 @@ const CountryCard = ({ country }) => {
         >
           <div>
             <h1>{numeral(countryData.cases).format("0,0")}</h1>
-            <h3 style={{ color: "#fff", fontSize: "1.5em" }}>
-              <span style={{ marginRight: "10px" }}>
-                <PlusOutlined />
-              </span>
-              {numeral(countryData.todayCases).format("0,0a")}
-            </h3>
           </div>
         </Card>
         <Card
@@ -46,11 +74,6 @@ const CountryCard = ({ country }) => {
         >
           <div>
             <h1>{numeral(countryData.recovered).format("0,0")}</h1>
-            <h3 style={{ color: "#fff", fontSize: "1.5em" }}>
-              <PlusOutlined />
-              <span style={{ marginRight: "10px" }}></span>
-              {numeral(countryData.todayRecovered).format("0,0a")}
-            </h3>
           </div>
         </Card>
         <Card
@@ -62,11 +85,6 @@ const CountryCard = ({ country }) => {
         >
           <div>
             <h1>{numeral(countryData.deaths).format("0,0")}</h1>
-            <h3 style={{ color: "#fff", fontSize: "1.5em" }}>
-              <PlusOutlined />
-              <span style={{ marginRight: "10px" }}></span>
-              {numeral(countryData.todayDeaths).format("0,0a")}
-            </h3>
           </div>
         </Card>
 
